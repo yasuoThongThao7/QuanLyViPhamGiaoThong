@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="WpfApp2.View.ViolationDetail"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApp2.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DropShadowEffect x:Key="CardShadow" BlurRadius="10" ShadowDepth="2" Color="#22000000"/>
+    </UserControl.Resources>
+    <Grid Background="#FFF8F5">
+        <ScrollViewer HorizontalScrollBarVisibility ="Hidden" >
+            <Border Background="White" CornerRadius="16" Padding="28" Margin="28" Effect="{StaticResource CardShadow}">
+                <StackPanel>
+                    <!-- Tiêu đề -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,24" VerticalAlignment="Center">
+                        <materialDesign:PackIcon Kind="ClipboardText" Width="32" Height="32" Foreground="#B5B19F" Margin="0,0,10,0"/>
+                        <TextBlock Text="Chi tiết biên bản vi phạm" FontSize="22" FontWeight="Bold" Foreground="#3A3A3A"/>
+                    </StackPanel>
+
+                    <!-- Người vi phạm -->
+                    <TextBlock Text="Người vi phạm :" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,6"/>
+                    <StackPanel Margin="0,0,0,12">
+                        <TextBlock Text="{Binding PersonId, StringFormat=CCCD: {0}}" FontSize="15" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding Person.Name, StringFormat=Họ tên: {0}}" FontSize="15" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding Person.Address, StringFormat=Địa chỉ: {0}}" FontSize="15" Foreground="#3A3A3A"/>
+                    </StackPanel>
+
+                    <!-- Thông tin phương tiện -->
+                    <TextBlock Text="Phương tiện :" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,6"/>
+                    <StackPanel Margin="0,0,0,12">
+                        <TextBlock Text="{Binding VehicleId, StringFormat=Biển số: {0}}" FontSize="15" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding Vehicle.TypeId, StringFormat=Loại xe: {0}}" FontSize="15" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding Vehicle.BrandId, StringFormat=Hãng xe: {0}}" FontSize="15" Foreground="#3A3A3A"/>
+                    </StackPanel>
+
+                    <!-- Thông tin công an -->
+                    <TextBlock Text="Cán bộ lập biên bản :" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,6"/>
+                    <TextBlock Text="{Binding Police.Person.Name}" FontSize="15" Foreground="#3A3A3A" Margin="0,0,0,12"/>
+
+                    <!-- Thông tin biên bản -->
+                    <TextBlock Text="Thông tin biên bản :" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,6"/>
+                    <StackPanel Margin="0,0,0,12">
+                        <TextBlock Text="{Binding Date, StringFormat=Ngày lập: {0:dd/MM/yyyy}}" FontSize="15" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding Location, StringFormat=Địa điểm: {0}}" FontSize="15" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding TotalFine, StringFormat=Tổng tiền phạt: {0:N0} VNĐ}" FontSize="15" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding IsPaid, Converter={StaticResource BoolToPaidStatusConverter}}" FontSize="15" Foreground="#3A3A3A"/>
+                    </StackPanel>
+
+                    <!-- Danh sách lỗi vi phạm -->
+                    <TextBlock Text="Các lỗi vi phạm :" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,6"/>
+                    <Border Background="#F2E3CE" CornerRadius="8" Padding="12" Margin="0,0,0,0">
+                        <TextBlock FontSize="15" Foreground="#3A3A3A" TextWrapping="Wrap">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}">
+                                    <MultiBinding.Converter>
+                                        <local:ViolationListToStringConverter/>
+                                    </MultiBinding.Converter>
+                                    <Binding Path="Violations"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+     </ScrollViewer>
+    </Grid>
+</UserControl>
