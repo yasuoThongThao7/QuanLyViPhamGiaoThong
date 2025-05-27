@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp2"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="520" d:DesignWidth="900">
@@ -17,7 +16,7 @@
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header + Quick Stats -->
+        <!-- Header + Quick Stats + Search -->
         <StackPanel Grid.Row="0" Orientation="Vertical" Margin="32,10,32,0">
             <Grid  VerticalAlignment="Center" Margin="0,0,0,12">
                 <StackPanel Orientation="Horizontal">
@@ -26,59 +25,36 @@
                 </StackPanel>
                 <Grid HorizontalAlignment="Right">
                     <Border Background="#F2E3CE" CornerRadius="12" Padding="6,2" Effect="{StaticResource CardShadow}" >
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Style="{StaticResource MaterialDesignToolButton}" Background="Transparent">
-                            <materialDesign:PackIcon Kind="Search" Foreground="#B5B19F" Opacity="0.7"/>
-                        </Button>
-                        <TextBox
-                             Grid.Column="1"
-                             MinWidth="180"
-                             Margin="8,0,0,0"
-                             VerticalAlignment="Center"
-                             materialDesign:HintAssist.Hint="Tìm kiếm nhanh"
-                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
-                             BorderThickness="0"
-                             Text="{Binding SearchText}"
-                             Background="Transparent"/>
-                        <Button
-                             Grid.Column="2"
-                             Style="{StaticResource MaterialDesignToolButton}" Background="Transparent">        
-                            <materialDesign:PackIcon Kind="Microphone" Foreground="#B5B19F" Opacity="0.7"/>
-                        </Button>
-                    </Grid>
-                </Border>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Style="{StaticResource MaterialDesignToolButton}" Background="Transparent"
+                                    Command="{Binding SearchCommand}">
+                                <materialDesign:PackIcon Kind="Search" Foreground="#B5B19F" Opacity="0.7"/>
+                            </Button>
+                            <TextBox
+                                 Grid.Column="1"
+                                 MinWidth="180"
+                                 Margin="8,0,0,0"
+                                 VerticalAlignment="Center"
+                                 materialDesign:HintAssist.Hint="Tìm kiếm nhanh"
+                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                 BorderThickness="0"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent"/>
+                            <Button
+                                 Grid.Column="2"
+                                 Style="{StaticResource MaterialDesignToolButton}" Background="Transparent">
+                                <materialDesign:PackIcon Kind="Microphone" Foreground="#B5B19F" Opacity="0.7"/>
+                            </Button>
+                        </Grid>
+                    </Border>
                 </Grid>
             </Grid>
             <TextBlock Text="Xem, tìm kiếm và quản lý các biên bản vi phạm giao thông." FontSize="15" Foreground="#6B6B6B" Margin="0,0,0,12"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
-                <Border Background="#F2E3CE" CornerRadius="12" Padding="18,10" Margin="0,0,8,0" Effect="{StaticResource CardShadow}">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Kind="ClipboardTextOutline" Width="24" Height="24" Foreground="#B5B19F" Margin="0,0,8,0"/>
-                        <TextBlock Text="Tổng biên bản:" FontWeight="SemiBold" Foreground="#6B6B6B" Margin="0,0,4,0"/>
-                        <TextBlock Text="{Binding TotalReport}" FontWeight="Bold" Foreground="#3A3A3A"/>
-                    </StackPanel>
-                </Border>
-                <Border Background="#F2E3CE" CornerRadius="12" Padding="18,10" Margin="0,0,8,0" Effect="{StaticResource CardShadow}">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Kind="AccountAlert" Width="24" Height="24" Foreground="#B5B19F" Margin="0,0,8,0"/>
-                        <TextBlock Text="Người vi phạm:" FontWeight="SemiBold" Foreground="#6B6B6B" Margin="0,0,4,0"/>
-                        <TextBlock Text="{Binding TotalViolator}" FontWeight="Bold" Foreground="#3A3A3A"/>
-                    </StackPanel>
-                </Border>
-                <Border Background="#F2E3CE" CornerRadius="12" Padding="18,10" Effect="{StaticResource CardShadow}">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Kind="CashMultiple" Width="24" Height="24" Foreground="#B5B19F" Margin="0,0,8,0"/>
-                        <TextBlock Text="Tổng tiền phạt:" FontWeight="SemiBold" Foreground="#6B6B6B" Margin="0,0,4,0"/>
-                        <TextBlock Text="{Binding TotalFine}" FontWeight="Bold" Foreground="#3A3A3A"/>
-                    </StackPanel>
-                </Border>
-                
-            </StackPanel>
         </StackPanel>
 
         <!-- Title + Add Button -->
@@ -116,23 +92,26 @@
                           HeadersVisibility="Column"
                           CanUserAddRows="False"
                           IsReadOnly="True"
-                          ItemsSource="{Binding ReportList}"        
+                          ItemsSource="{Binding FilteredData}"        
                           Background="White"             
-                          RowHeight="40"
+                          RowHeight="50"
                           ColumnWidth="*"
                           FontFamily="Segoe UI"
-                          FontSize="14"
-                          ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}">
+                          FontSize="14">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Mã biên bản" Binding="{Binding Ma}"/>
-                        <DataGridTextColumn Header="Người vi phạm" Binding="{Binding NguoiViPham}"/>
-                        <DataGridTextColumn Header="Ngày" Binding="{Binding Ngay}"/>
-                        <DataGridTextColumn Header="Cán bộ" Binding="{Binding TongPhat}"/>
+                        <DataGridTextColumn Header="Mã biên bản" Binding="{Binding Id}"/>
+                        <DataGridTextColumn Header="Người vi phạm" Binding="{Binding Person.Name}"/>
+                        <DataGridTextColumn Header="Ngày" Binding="{Binding Date, StringFormat=dd/MM/yyyy}"/>
+                        <DataGridTextColumn Header="Cán bộ" Binding="{Binding Police.Person.Name}"/>
                         <DataGridTemplateColumn Header="Chi Tiết">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="Chi tiết" 
-                                            Command="{Binding ViolationRecordAddCommand}"
+                                    <Button Content="Chi tiết"
+                                            Command="{Binding DataContext.XemChiTietCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding Id}"
+                                            Height="30"
+                                            Width="80"
+                                            VerticalAlignment="Top"
                                             Padding="5,2"
                                             Style="{StaticResource MaterialDesignOutlinedButton}"/>
                                 </DataTemplate>

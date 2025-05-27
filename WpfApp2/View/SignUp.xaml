@@ -50,8 +50,11 @@
                         <StackPanel Margin="0,0,0,8">
                             <TextBox x:Name="LoginBox"
                                      Margin="0,8,0,0"
-                                     materialDesign:HintAssist.Hint="Tên đăng nhập"
+                                     materialDesign:HintAssist.Hint="Số CCCD"
                                      Text="{Binding UserName, Mode=TwoWay}"
+                                     PreviewTextInput="TextBox_PreviewTextInput" 
+                                    PreviewKeyDown="TextBox_PreviewKeyDown"
+                                    DataObject.Pasting="TextBox_Pasting"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             <PasswordBox x:Name="PasswordBox"
                                          Margin="0,8,0,0"
@@ -99,8 +102,9 @@
                                 <TextBox Margin="8,0,0,0"
                                          materialDesign:HintAssist.Hint="Số CCCD"
                                          Text="{Binding CCCD, Mode=TwoWay}"
-                                         PreviewTextInput="TextBox_PreviewTextInput"
-                                         DataObject.Pasting="TextBox_Pasting"
+                                         PreviewTextInput="TextBox_PreviewTextInput" 
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"
+                                        DataObject.Pasting="TextBox_Pasting"
                                          Width="240"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             </StackPanel>

@@ -1,69 +1,59 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using WpfApp2.Model;
 using WpfApp2.Service;
+using WpfApp2.View;
+using WpfApp2.View.Citizen;
 
 namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
 {
+
     public class ViolationDetailViewModel : BaseViewModel
     {
-        // CCCD của người vi phạm
-        private string _personId;
-        public string PersonId
-        {
-            get => _personId;
-            set => SetProperty(ref _personId, value);
-        }
-
-        // Thông tin chi tiết của người vi phạm (họ tên, địa chỉ...)
-        private Person _person;
+        private Person _person = new Person();
         public Person Person
         {
             get => _person;
             set => SetProperty(ref _person, value);
         }
 
-        // Biển số xe của phương tiện vi phạm
-        private string _vehicleId;
+        private string _vehicleId = string.Empty;
         public string VehicleId
         {
             get => _vehicleId;
             set => SetProperty(ref _vehicleId, value);
         }
 
-        // Thông tin phương tiện (loại xe, hãng xe...)
-        private Vehicle _vehicle;
+        private Vehicle _vehicle = new Vehicle();
         public Vehicle Vehicle
         {
             get => _vehicle;
             set => SetProperty(ref _vehicle, value);
         }
 
-        // Thông tin cán bộ công an lập biên bản
-        private Police _police;
+        private Police _police = new Police();
         public Police Police
         {
             get => _police;
             set => SetProperty(ref _police, value);
         }
 
-        // Ngày lập biên bản
-        private DateTime _date;
+        private DateTime _date = DateTime.Now;
         public DateTime Date
         {
             get => _date;
             set => SetProperty(ref _date, value);
         }
 
-        // Địa điểm vi phạm
-        private string _location;
+        private string _location = string.Empty;
         public string Location
         {
             get => _location;
             set => SetProperty(ref _location, value);
         }
 
-        // Tổng số tiền phạt cho biên bản này
         private decimal _totalFine;
         public decimal TotalFine
         {
@@ -71,7 +61,6 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
             set => SetProperty(ref _totalFine, value);
         }
 
-        // Trạng thái thanh toán (đã nộp phạt hay chưa)
         private bool _isPaid;
         public bool IsPaid
         {
@@ -79,47 +68,62 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
             set => SetProperty(ref _isPaid, value);
         }
 
-        // Danh sách các lỗi vi phạm trong biên bản
-        private ObservableCollection<Violation> _violations;
+        private ObservableCollection<Violation> _violations = new ObservableCollection<Violation>();
         public ObservableCollection<Violation> Violations
         {
             get => _violations;
             set => SetProperty(ref _violations, value);
         }
 
-        // Fix for CS0029 and CS8604
         private void LoadReportDetails(Report report)
         {
-            if (report.Violations != null) 
+            Person = report.Person ?? new Person();
+            VehicleId = report.VehicleId ?? string.Empty;
+            Vehicle = report.Vehicle ?? new Vehicle();
+            Police = report.Police ?? new Police();
+            Date = report.Date;
+            Location = report.Location ?? string.Empty;
+            TotalFine = report.TotalFine;
+            IsPaid = report.IsPaid;
+
+            if (report.Violations != null)
             {
                 Violations = new ObservableCollection<Violation>(
                     report.Violations
-                        .Where(v => v.Violation != null) 
-                        .Select(v => v.Violation!) 
+                        .Where(v => v.Violation != null)
+                        .Select(v => v.Violation!)
                 );
             }
             else
             {
-                Violations = new ObservableCollection<Violation>(); 
+                Violations = new ObservableCollection<Violation>();
             }
-
-            PersonId = report.PersonId!;
-            VehicleId = report.VehicleId!;
-            Police = report.Police!;
-            Date = report.Date;
-            Location = report.Location!;
-            TotalFine = report.TotalFine;
-            IsPaid = report.IsPaid;
         }
+        public ICommand BackCommand { get; }
+ 
 
-        // Constructor 
-        public ViolationDetailViewModel(string report)
+
+        private async Task LoadViolationDetails(int reportId)
         {
-            
+            var reportService = new ReportService();
+            var report = await reportService.GetReportByIdAsync(reportId);
+            if (report != null)
+            {
+                LoadReportDetails(report);
+            }
         }
-        public ViolationDetailViewModel()
+        public void Back()
         {
-
+            if (UserSession.Instance.Account.Role.Equals("Police"))
+                App.ViewModel!.CurrentView = new ViolationSearch();
+            else
+                App.ViewModel!.CurrentView = new RecordLookup();
         }
+        public ViolationDetailViewModel(int reportId)
+        {
+            _ = LoadViolationDetails(reportId);
+            BackCommand = new RelayCommand(_ => Back());
+        }
+
     }
 }

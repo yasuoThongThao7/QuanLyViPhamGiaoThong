@@ -8,7 +8,6 @@ namespace WpfApp2.Converters
 {
     public class ViolationListToStringConverter : IMultiValueConverter, IValueConverter
     {
-        // Dùng cho MultiBinding (nếu cần)
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values == null || values.Length == 0 || values[0] == null)
@@ -17,7 +16,6 @@ namespace WpfApp2.Converters
             return ConvertListToString(values[0]);
         }
 
-        // Dùng cho Binding thông thường
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return ConvertListToString(value);

@@ -10,7 +10,9 @@
         <DropShadowEffect x:Key="CardShadow" BlurRadius="12" ShadowDepth="2" Color="#22000000"/>
     </UserControl.Resources>
     <Grid Background="#FFF8F5">
-        <Border Background="White" CornerRadius="18" Padding="32" Margin="10" Effect="{StaticResource CardShadow}">
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden">
+            <Border Background="White" CornerRadius="18" Padding="32" Margin="10" Effect="{StaticResource CardShadow}">
+            
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -96,5 +98,6 @@
                 </StackPanel>
             </Grid>
         </Border>
+        </ScrollViewer>
     </Grid>
 </UserControl>

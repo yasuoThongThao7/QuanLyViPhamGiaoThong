@@ -23,6 +23,7 @@ namespace WpfApp2.View.Citizen
         public RecordLookup()
         {
             InitializeComponent();
+            this.DataContext = new ViewModel.User.RecordLookupViewModel();
         }
     }
 }

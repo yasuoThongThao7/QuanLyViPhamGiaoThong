@@ -66,7 +66,7 @@
         <Border Grid.Row="2" Background="White" CornerRadius="14" Margin="24,0,24,24" Padding="18" Effect="{StaticResource CardShadow}">
             <Grid>
                 <TextBlock Text="Vi phạm gần đây" FontSize="26" FontWeight="Bold" Foreground="#3A3A3A" Margin="0,0,0,16"/>
-                <ScrollViewer>
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                     <ItemsControl ItemsSource="{Binding RecentViolations}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

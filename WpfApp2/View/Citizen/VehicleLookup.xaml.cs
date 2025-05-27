@@ -23,6 +23,7 @@ namespace WpfApp2.View.Citizen
         public VehicleLookup()
         {
             InitializeComponent();
+            this.DataContext = new ViewModel.User.VehicleLookupViewModel();
         }
     }
 }

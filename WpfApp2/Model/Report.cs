@@ -22,11 +22,11 @@ namespace WpfApp2.Model
 
         // Liên kết
         [ForeignKey("PersonId")]
-        public virtual Person? Person { get; set; }
+        public virtual Person Person { get; set; }
         [ForeignKey("VehicleId")]
-        public virtual Vehicle? Vehicle { get; set; }
+        public virtual Vehicle Vehicle { get; set; }
         [ForeignKey("PoliceId")]
-        public virtual Police? Police { get; set; }
+        public virtual Police Police { get; set; }
         public virtual ICollection<ReportInfo>? Violations { get; set; }  // Danh sách lỗi vi phạm
     }
 

@@ -9,10 +9,10 @@ namespace WpfApp2.View
     /// </summary>
     public partial class ViolationDetail : UserControl
     {
-        public ViolationDetail()
+        public ViolationDetail(int id)
         {
             InitializeComponent();
-            DataContext = new ViolationDetailViewModel();
+            DataContext = new ViolationDetailViewModel(id);
         }
     }
 }

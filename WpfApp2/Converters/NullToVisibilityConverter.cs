@@ -9,7 +9,6 @@ namespace WpfApp2.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // Nếu value null thì Collapsed, ngược lại Visible
             return value == null ? Visibility.Collapsed : Visibility.Visible;
         }
 

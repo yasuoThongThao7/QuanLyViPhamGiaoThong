@@ -61,24 +61,21 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
                         <materialDesign:PackIcon Kind="Car" Width="28" Height="28" Foreground="#B5B19F" Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding VehicleInfo.NumberPlate}" FontSize="20" FontWeight="Bold" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding VehicleInfo.Id}" FontSize="20" FontWeight="Bold" Foreground="#3A3A3A"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                         <TextBlock Text="Loại xe: " FontWeight="SemiBold" Foreground="#6B6B6B" Width="100"/>
-                        <TextBlock Text="{Binding VehicleInfo.VehicleType}" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding VehicleInfo.Type.Name}" Foreground="#3A3A3A"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                         <TextBlock Text="Hãng xe: " FontWeight="SemiBold" Foreground="#6B6B6B" Width="100"/>
-                        <TextBlock Text="{Binding VehicleInfo.Brand}" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding VehicleInfo.Brand.Name}" Foreground="#3A3A3A"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                         <TextBlock Text="Chủ sở hữu: " FontWeight="SemiBold" Foreground="#6B6B6B" Width="100"/>
-                        <TextBlock Text="{Binding VehicleInfo.Owner}" Foreground="#3A3A3A"/>
+                        <TextBlock Text="{Binding VehicleInfo.Person.Name}" Foreground="#3A3A3A"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                        <TextBlock Text="Trạng thái: " FontWeight="SemiBold" Foreground="#6B6B6B" Width="100"/>
-                        <TextBlock Text="{Binding VehicleInfo.Status}" Foreground="#3A3A3A"/>
-                    </StackPanel>
+                   
                 </StackPanel>
             </Border>
         </StackPanel>

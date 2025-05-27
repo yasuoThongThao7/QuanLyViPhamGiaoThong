@@ -50,13 +50,33 @@ namespace WpfApp2.View
                 viewModel.ConfirmPassword = ConfirmPassword.Password;
             }
         }
-        // Ngăn việc dán chữ
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextNumeric(e.Text);
+        }
+
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Back || e.Key == Key.Delete ||
+                e.Key == Key.Tab || e.Key == Key.Left || e.Key == Key.Right)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            if (!(e.Key >= Key.D0 && e.Key <= Key.D9) &&
+                !(e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9))
+            {
+                e.Handled = true;
+            }
+        }
+
         private void TextBox_Pasting(object sender, DataObjectPastingEventArgs e)
         {
             if (e.DataObject.GetDataPresent(typeof(string)))
             {
                 string text = (string)e.DataObject.GetData(typeof(string));
-                if (!text.All(char.IsDigit))
+                if (!IsTextNumeric(text))
                 {
                     e.CancelCommand();
                 }
@@ -66,12 +86,7 @@ namespace WpfApp2.View
                 e.CancelCommand();
             }
         }
-        // Ngăn việc viết chữ
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !IsTextNumeric(e.Text);
-        }
-        //Kiểm tra textbox có phải là chữ số hay không
+
         private bool IsTextNumeric(string text)
         {
             return text.All(char.IsDigit);

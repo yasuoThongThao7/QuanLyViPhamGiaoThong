@@ -23,6 +23,7 @@ namespace WpfApp2.View.Citizen
         public OnlinePayment()
         {
             InitializeComponent();
+            this.DataContext = new ViewModel.User.OnlinePaymentViewModel();
         }
     }
 }

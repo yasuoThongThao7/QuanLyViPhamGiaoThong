@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
+using WpfApp2.View.Citizen;
 using WpfApp2.ViewModel;
 
 namespace WpfApp2.ViewModel.User
@@ -58,11 +60,17 @@ namespace WpfApp2.ViewModel.User
             get => _note;
             set => SetProperty(ref _note, value);
         }
-        public ICommand PayCommand { get; }
+        public ICommand ConfirmPaymentCommand { get; }
         public ICommand BackCommand { get; }
         private void Pay()
         {
-            // Implement payment logic here
+            if (ReportNumber > 0 && !string.IsNullOrEmpty(SelectedPaymentMethod))
+            {
+                UserSession.Instance.Reports.Find(r => r.Id == ReportNumber)!.IsPaid = true;
+                UserSession.Instance.Reports.Find(r => r.Id == ReportNumber)!.PaidDate = DateTime.Now;
+                MessageBox.Show("Thanh toán thành công");
+                App.ViewModel!.CurrentView = new UserHome();
+            }
         }
         private void ImportProperty()
         {
@@ -77,14 +85,14 @@ namespace WpfApp2.ViewModel.User
         }
         private void Back()
         {
-            App.ViewModel!.CurrentView = new UserHomeViewModel();
+            App.ViewModel!.CurrentView = new UserHome();
         }
         public OnlinePaymentViewModel()
         {
             // Initialize properties
             PaymentMethods = new List<string> { "Credit Card", "Debit Card", "PayPal" };
             // Initialize commands
-            PayCommand = new RelayCommand(_ => Pay());
+            ConfirmPaymentCommand = new RelayCommand(_ => Pay());
             BackCommand = new RelayCommand(_ => Back());
         }
     }

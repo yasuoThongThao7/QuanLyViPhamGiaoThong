@@ -43,7 +43,7 @@ namespace WpfApp2.ViewModel.User
                     Date = r.Date,
                     Fine = r.TotalFine,
                     Status = r.IsPaid,
-                    ViewDetailCommand = new RelayCommand(_ => ViewDetail(r.Id.ToString()))
+                    ViewDetailCommand = new RelayCommand(_ => ViewDetail(r.Id))
                 });
             }
         }
@@ -55,7 +55,7 @@ namespace WpfApp2.ViewModel.User
 
         private void LookUp()
         {
-            mvd.CurrentView = new RecordLookup();
+            mvd.CurrentView = new VehicleLookup();
         }
 
         private void ReportListView()
@@ -65,7 +65,7 @@ namespace WpfApp2.ViewModel.User
 
         private void Pay()
         {
-            mvd.CurrentView = new OnlinePaymentViewModel();
+            mvd.CurrentView = new OnlinePayment();
         }
 
         public UserHomeViewModel()
@@ -80,7 +80,7 @@ namespace WpfApp2.ViewModel.User
 
         }
 
-        private void ViewDetail(string reportCode)
+        private void ViewDetail(int reportCode)
         {
             // Thay bằng logic mở chi tiết biên bản
             mvd.CurrentView = new ViolationDetailViewModel(reportCode);

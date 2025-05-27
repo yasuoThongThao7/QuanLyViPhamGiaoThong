@@ -23,6 +23,9 @@ namespace WpfApp2.Service
         public async Task<Vehicle?> GetVehicleByIdAsync(string id) =>
             await _context.Vehicle
                     .AsNoTracking()
+                    .Include(v => v.Person)
+                    .Include(v => v.Brand)
+                    .Include(v => v.Type)
                     .FirstOrDefaultAsync(v => v.Id == id);
 
         // Lấy danh sách Vehicle theo OwnerId

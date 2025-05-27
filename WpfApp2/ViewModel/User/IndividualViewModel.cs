@@ -65,19 +65,24 @@ namespace WpfApp2.ViewModel.User
 
         public IndividualViewModel()
         {
-            
+            setProperty();
         }
 
-        public  void setProperty()
+        public void setProperty()
         {
             Person person = UserSession.Instance.Person;
+            if (person == null)
+            {
+                return;
+            }
             Name = person.Name;
             CCCD = person.CCCD;
-            Birth = person.birth ?? DateTime.MinValue; 
+            Birth = person.birth ?? DateTime.MinValue;
             Address = person.Address;
             PhoneNumber = person.PhoneNumber;
             NumberOfViolations = UserSession.Instance.Reports.Count;
             Fine = UserSession.Instance.Fine;
         }
+
     }
 }

@@ -15,7 +15,7 @@ namespace WpfApp2.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // Nếu cần chuyển ngược lại, có thể bổ sung logic ở đây
+          
             throw new NotImplementedException();
         }
     }
