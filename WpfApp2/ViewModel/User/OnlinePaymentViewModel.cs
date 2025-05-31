@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using WpfApp2.Service;
 using WpfApp2.View.Citizen;
 using WpfApp2.ViewModel;
 
@@ -66,10 +67,21 @@ namespace WpfApp2.ViewModel.User
         {
             if (ReportNumber > 0 && !string.IsNullOrEmpty(SelectedPaymentMethod))
             {
-                UserSession.Instance.Reports.Find(r => r.Id == ReportNumber)!.IsPaid = true;
-                UserSession.Instance.Reports.Find(r => r.Id == ReportNumber)!.PaidDate = DateTime.Now;
-                MessageBox.Show("Thanh toán thành công");
-                App.ViewModel!.CurrentView = new UserHome();
+                ReportService service = new ReportService();
+                var report = UserSession.Instance.Reports.Find(r => r.Id == ReportNumber);
+                if (report != null)
+                {
+                    report.IsPaid = true;
+                    report.PaidDate = DateTime.Now;
+                }
+                service.SaveChangesAsync().ContinueWith(task =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageBox.Show("Thanh toán thành công");
+                        App.ViewModel!.CurrentView = new UserHome();
+                    });
+                });
             }
         }
         private void ImportProperty()

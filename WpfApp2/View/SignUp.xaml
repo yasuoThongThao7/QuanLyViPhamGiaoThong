@@ -39,22 +39,19 @@
         </Border>
 
         <!-- Form đăng nhập/đăng ký -->
-        <Border Grid.Column="1" Background="White" CornerRadius="18" Margin="0,32,32,32" Padding="32"
+        <Border Grid.Column="1" Background="White" CornerRadius="18" Margin="0,15,32,15" Padding="32 10"
                 Effect="{StaticResource CardShadow}">
             <Grid>
                 <TabControl Background="Transparent" BorderThickness="0" Margin="0">
                 <!-- Đăng nhập -->
                 <TabItem Header="Đăng nhập">
                     <StackPanel Margin="0,16,0,0">
-                        <TextBlock Text="Đăng nhập tài khoản" FontSize="20" FontWeight="Bold" Margin="0,0,0,18"/>
+                        <TextBlock Text="Đăng nhập tài khoản" FontSize="20" FontWeight="Bold" Margin="0,0,0,18" HorizontalAlignment="Center"/>
                         <StackPanel Margin="0,0,0,8">
                             <TextBox x:Name="LoginBox"
                                      Margin="0,8,0,0"
                                      materialDesign:HintAssist.Hint="Số CCCD"
                                      Text="{Binding UserName, Mode=TwoWay}"
-                                     PreviewTextInput="TextBox_PreviewTextInput" 
-                                    PreviewKeyDown="TextBox_PreviewKeyDown"
-                                    DataObject.Pasting="TextBox_Pasting"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             <PasswordBox x:Name="PasswordBox"
                                          Margin="0,8,0,0"
@@ -85,7 +82,7 @@
                 <!-- Đăng ký -->
                 <TabItem Header="Đăng ký">
                     <StackPanel Margin="0,16,0,0">
-                        <TextBlock Text="Tạo tài khoản mới" FontSize="20" FontWeight="Bold" Margin="0,0,0,18"/>
+                        <TextBlock Text="Tạo tài khoản mới" FontSize="20" FontWeight="Bold" Margin="0,0,0,18" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Vertical" Margin="0,0,0,8" >
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <materialDesign:PackIcon Kind="Account" Width="24" Height="24" VerticalAlignment="Center" Foreground="#B5B19F"/>
@@ -93,7 +90,7 @@
                                          Margin="8,0,0,0"
                                          IsReadOnly="True"
                                          Text="{Binding Name}"
-                                         Width="240"
+                                         Width="300"
                                          materialDesign:HintAssist.Hint="Họ và tên"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             </StackPanel>
@@ -105,7 +102,7 @@
                                          PreviewTextInput="TextBox_PreviewTextInput" 
                                           PreviewKeyDown="TextBox_PreviewKeyDown"
                                         DataObject.Pasting="TextBox_Pasting"
-                                         Width="240"
+                                         Width="300"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -120,7 +117,7 @@
                                 <TextBox Margin="8,0,0,0"
                                          IsReadOnly="True"
                                          Text="{Binding Birth}"
-                                         Width="120"
+                                         Width="130"
                                          materialDesign:HintAssist.Hint="Ngày sinh"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             </StackPanel>
@@ -131,7 +128,7 @@
                                              PasswordChanged="Password_PasswordChanged"
                                              materialDesign:HintAssist.Hint="Nhập mật khẩu"
                                              materialDesign:HintAssist.HelperText="Mật khẩu phải là chữ cái và số"
-                                             Width="240"
+                                             Width="300"
                                              Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -140,7 +137,7 @@
                                              Margin="8,0,0,0"
                                              PasswordChanged="ConfirmPassword_PasswordChanged"
                                              materialDesign:HintAssist.Hint="Nhập lại mật khẩu"
-                                             Width="240"
+                                             Width="300"
                                              Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"/>
                             </StackPanel>
                         </StackPanel>

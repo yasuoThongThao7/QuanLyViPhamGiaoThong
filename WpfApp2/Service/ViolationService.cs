@@ -19,11 +19,14 @@ namespace WpfApp2.Service
             => await _context.Violation
                 .Where(v => v.Description!.Contains(searchText) || v.Id.ToString().Contains(searchText))
                 .ToListAsync();
-        
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<List<Violation>> GetAllViolationsAsync()
-         => await _context.Violation.ToListAsync();
-
+         => await _context.Violation.AsNoTracking().Include(v => v.Type).ToListAsync();
 
         // Lấy danh sách vi phạm theo 1 mảng ID  
         public async Task<List<Violation>> GetViolationByIdRangeAsync(int[] id)

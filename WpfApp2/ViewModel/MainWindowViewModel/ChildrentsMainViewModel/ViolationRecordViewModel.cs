@@ -6,12 +6,74 @@ using WpfApp2.Model;
 using WpfApp2.Service;
 using System.Linq;
 using WpfApp2.View;
+using System.Threading.Tasks;
 
 namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
 {
     public class ViolationRecordViewModel : BaseViewModel
     {
-       
+        #region Message Properties
+        private bool _isCCCDTrue = false;
+        // Thông báo cho CCCD
+        private string? _cccdMessage;
+        public string? CccdMessage
+        {
+            get => _cccdMessage;
+            set { _cccdMessage = value; OnPropertyChanged(); }
+        }
+
+        private string? _cccdMessageType = "Error";
+        public string? CccdMessageType
+        {
+            get => _cccdMessageType;
+            set { _cccdMessageType = value; OnPropertyChanged(); }
+        }
+
+        // Thông báo cho phương tiện
+        private string? _vehicleMessage;
+        public string? VehicleMessage
+        {
+            get => _vehicleMessage;
+            set { _vehicleMessage = value; OnPropertyChanged(); }
+        }
+
+        private string? _vehicleMessageType = "Error";
+        public string? VehicleMessageType
+        {
+            get => _vehicleMessageType;
+            set { _vehicleMessageType = value; OnPropertyChanged(); }
+        }
+
+        // Thông báo cho ngày lập biên bản
+        private string? _violationMessage;
+        public string? ViolationMessage
+        {
+            get => _violationMessage;
+            set { _violationMessage = value; OnPropertyChanged(); }
+        }
+
+        private string? _violationMessageType = "Error";
+        public string? ViolationMessageType
+        {
+            get => _violationMessageType;
+            set { _violationMessageType = value; OnPropertyChanged(); }
+        }
+
+        // Thông báo cho địa điểm
+        private string? _locationMessage;
+        public string? LocationMessage
+        {
+            get => _locationMessage;
+            set { _locationMessage = value; OnPropertyChanged(); }
+        }
+
+        private string? _locationMessageType = "Error";
+        public string? LocationMessageType
+        {
+            get => _locationMessageType;
+            set { _locationMessageType = value; OnPropertyChanged(); }
+        }
+        #endregion
 
         #region Thuộc tính người vi phạm 
         public string CCCD
@@ -21,9 +83,16 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
             {
                 _cccd = value;
                 OnPropertyChanged();
-                if (_cccd.Length >=10 && _cccd.Length <= 12)
+                // Reset message
+                CccdMessage = null;
+                if (_cccd.Length >= 10 && _cccd.Length <= 12)
                 {
                     DisplayPersonInfo();
+                }
+                else if (!string.IsNullOrEmpty(_cccd))
+                {
+                    CccdMessage = "CCCD phải từ 10 đến 12 ký tự.";
+                    CccdMessageType = "Error";
                 }
             }
         }
@@ -38,85 +107,93 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
         // Hàm hiển thị thông tin sau khi nhập cccd
         private async void DisplayPersonInfo()
         {
-            // Gọi dịch vụ để lấy thông tin người vi phạm từ cơ sở dữ liệu
             var personService = new PersonService();
             var person = await personService.GetPersonByIdAsync(CCCD);
             if (person != null)
             {
+                _isCCCDTrue = true;
                 Name = person.Name!;
                 Address = person.Address!;
+                CccdMessage = null;
             }
             else
             {
-                MessageBox.Show("Không tìm thấy thông tin người vi phạm.");
+                CccdMessage = "Không tìm thấy thông tin người vi phạm.";
+                CccdMessageType = "Error";
+                Name = string.Empty;
+                Address = string.Empty;
             }
         }
-
         #endregion
 
         #region Thông tin phương tiện
-        // Biển số xe
-        public string NumberPlate 
-        { 
+        private bool _isVehicleInfoValid = false;
+        private int? _vehicleTypeId; // Lưu TypeId của xe
+        private ObservableCollection<Violation> _allViolations; // Lưu toàn bộ danh sách vi phạm gốc
+
+        public string NumberPlate
+        {
             get => _numberPlate;
             set
             {
                 _numberPlate = value;
                 OnPropertyChanged();
+                VehicleMessage = null;
                 if (_numberPlate.Length == 9)
                 {
                     DisplayVehicleInfo();
+                }
+                else if (!string.IsNullOrEmpty(_numberPlate))
+                {
+                    VehicleMessage = "Biển số xe phải đủ 9 ký tự.";
+                    VehicleMessageType = "Error";
+                    _vehicleTypeId = null;
+                    CarCompany = "";
+                    VehicleType = "";
+                    FilterViolationTypes(); // Lọc lại danh sách vi phạm khi biển số không hợp lệ
                 }
             }
         }
         private string _numberPlate;
 
-        // Hãng xe
-        private int _carCompany;
-        public int CarCompany
+        private string _carCompany;
+        public string CarCompany
         {
             get => _carCompany;
             set { _carCompany = value; OnPropertyChanged(nameof(CarCompany)); }
         }
 
-        // Kiểu xe
-        private int _vehicleType;
-        public int VehicleType
+        private string _vehicleType;
+        public string VehicleType
         {
             get => _vehicleType;
             set { _vehicleType = value; OnPropertyChanged(nameof(VehicleType)); }
         }
-        // Hàm show thông tin phương tiện sau khi nhập biển số
+
         private async void DisplayVehicleInfo()
         {
-            // Gọi dịch vụ để lấy thông tin phương tiện từ cơ sở dữ liệu
             var vehicleService = new VehicleService();
             var vehicle = await vehicleService.GetVehicleByIdAsync(NumberPlate);
             if (vehicle != null)
             {
-                CarCompany = vehicle.BrandId!;
-                VehicleType = vehicle.TypeId!;
+                _isVehicleInfoValid = true;
+                _vehicleTypeId = vehicle.TypeId; // Lưu TypeId của xe
+                CarCompany = vehicle.Brand?.Name ?? "";
+                VehicleType = vehicle.Type?.Name ?? "";
+                VehicleMessage = null;
+                FilterViolationTypes(); // Lọc danh sách vi phạm theo loại xe
             }
             else
             {
-                MessageBox.Show("Không tìm thấy thông tin phương tiện.");
+                VehicleMessage = "Không tìm thấy thông tin phương tiện.";
+                VehicleMessageType = "Error";
+                _vehicleTypeId = null;
+                CarCompany = "";
+                VehicleType = "";
+                FilterViolationTypes(); // Lọc lại danh sách vi phạm
             }
         }
 
-
-        #endregion
-
-        #region Thông tin vi phạm
-        public DateTime Day { get => _day; set { _day = value; OnPropertyChanged(); } }
-        private DateTime _day = DateTime.Now;
-
-        public string Location { get => _location; set { _location = value; OnPropertyChanged(); } }
-        private string _location;
-
-        //Danh sách lỗi trong combobox
-        public ObservableCollection<Violation> ViolationTypes { get; set; }
-
-        // Hàm khởi tạo dữ liệu trong danh sách lỗi vi phạm
         private void LoadViolationTypes()
         {
             Task.Run(async () =>
@@ -125,33 +202,66 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
                 var violationTypes = await service.GetAllViolationsAsync();
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    foreach (var violation in violationTypes)
-                    {
-                        ViolationTypes.Add(violation);
-                    }
+                    _allViolations = new ObservableCollection<Violation>(violationTypes);
+                    FilterViolationTypes();
                 });
             });
         }
 
+        private void FilterViolationTypes()
+        {
+            if (_allViolations == null) return; // Đảm bảo _allViolations đã được tải
 
-        // Kiểu SelectedType là lỗi vi phạm
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                ViolationTypes.Clear();
+                var filteredViolations = _allViolations
+                    .Where(v => v.TypeId == null || (_vehicleTypeId != null && v.TypeId == _vehicleTypeId))
+                    .Except(ViolationList) // Loại bỏ các vi phạm đã có trong ViolationList
+                    .ToList();
+                foreach (var violation in filteredViolations)
+                {
+                    ViolationTypes.Add(violation);
+                }
+            });
+        }
+        #endregion
+
+        #region Thông tin vi phạm
+        public DateTime Day { get => _day; set { _day = value; OnPropertyChanged(); } }
+        private DateTime _day = DateTime.Now;
+
+        public string Location
+        {
+            get => _location;
+            set
+            {
+                _location = value;
+                OnPropertyChanged();
+                LocationMessage = string.IsNullOrWhiteSpace(_location) ? "Địa điểm không được để trống." : null;
+                LocationMessageType = "Error";
+            }
+        }
+        private string _location;
+
+        public ObservableCollection<Violation> ViolationTypes { get; set; }
+
         public Violation? SelectedViolationType
         {
             get => _selectedViolationType;
             set { _selectedViolationType = value; OnPropertyChanged(); }
         }
         private Violation? _selectedViolationType;
-        // Danh sách lỗi vi phạm trong datagrid
+
         public ObservableCollection<Violation> ViolationList { get; set; }
-        
-        //Tiền phạt
+
         public int Fine
         {
             get => _fine;
             set { _fine = value; OnPropertyChanged(nameof(Fine)); }
         }
         private int _fine;
-        // Đã nộp tiền phạt hay chưa
+
         public bool IsPaid
         {
             get => _isPaid;
@@ -160,51 +270,54 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
         private bool _isPaid;
         #endregion
 
-
         #region Command 
         public ICommand AddCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
-
         public ICommand DeleteCommand { get; }
         #endregion
 
         #region Hàm xử lý Command
-        // Hàm khi nhấn nút Add vi phạm
         private void AddViolation()
         {
-            if(SelectedViolationType is Violation violation)
+            if (SelectedViolationType is Violation violation)
             {
                 ViolationList.Add(violation);
+                ViolationTypes.Remove(violation);
                 CalculateTotalFine();
+                ViolationMessage = null;
             }
             else
             {
-                MessageBox.Show("Vui lòng chọn lỗi vi phạm.");
+                ViolationMessage = "Vui lòng chọn lỗi vi phạm.";
+                ViolationMessageType = "Error";
             }
-            SelectedViolationType = null; // Reset lại lựa chọn
+            SelectedViolationType = null;
         }
-        // Hàm khi ko thể thêm vi phạm
+
         private bool CanAddViolation()
         {
             return SelectedViolationType != null;
         }
-        // Hàm xóa vi phạm trong datagrid
+
         private void RemoveViolation(Violation violation)
         {
             ViolationList.Remove(violation);
+            // Chỉ thêm lại vào ViolationTypes nếu vi phạm phù hợp với loại xe hoặc là lỗi chung
+            if (violation.TypeId == null || (_vehicleTypeId != null && violation.TypeId == _vehicleTypeId))
+            {
+                ViolationTypes.Add(violation);
+            }
             CalculateTotalFine();
         }
-        // Hàm tính tổng tiêng phạt 
+
         private void CalculateTotalFine()
         {
             Fine = ViolationList.Sum(v => v.FineAmount);
         }
-        // Hàm tạo mới biên bản
+
         private Report CreateNewReport()
         {
-            // Tạo một đối tượng mới cho biên bản
-            var reportService = new ReportService();
             var report = new Report
             {
                 PersonId = CCCD,
@@ -215,71 +328,83 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
                 Date = Day,
                 IsPaid = IsPaid,
                 PaidDate = IsPaid ? DateTime.Now : null,
-                Violations = ViolationList.Select(ViolationList => new ReportInfo
+                Violations = ViolationList.Select(v => new ReportInfo
                 {
-                    ViolationId = ViolationList.Id,
-                    ReportId = ViolationList.FineAmount
+                    ViolationId = v.Id
                 }).ToList()
             };
             return report;
         }
-        // Hàm lưu biên bản vào cơ sở dữ liệu
+
         private async Task SaveReport(Report report)
         {
             var reportService = new ReportService();
             await reportService.AddReportAsync(report);
         }
 
-        // Hàm của nút lưu biên bản
         private async Task Save()
         {
+            if (!_isCCCDTrue)
+            {
+                CccdMessage = "Vui lòng nhập đúng CCCD.";
+                CccdMessageType = "Error";
+                return;
+            }
 
-            var report = CreateNewReport(); // Tạo mới biên bản'
+            if (!_isVehicleInfoValid)
+            {
+                VehicleMessage = "Vui lòng nhập đúng biển số xe.";
+                VehicleMessageType = "Error";
+                return;
+            }
+
+            var report = CreateNewReport();
+            if (string.IsNullOrWhiteSpace(report.Location))
+            {
+                LocationMessage = "Vui lòng nhập địa điểm vi phạm.";
+                LocationMessageType = "Error";
+                return;
+            }
             if (report != null)
             {
-                // Lưu biên bản vào cơ sở dữ liệu
                 await SaveReport(report);
                 MessageBox.Show("Biên bản đã được lưu thành công!");
                 App.ViewModel!.CurrentView = new ViolationSearch();
             }
             else
             {
-                MessageBox.Show("Có lỗi khi tạo biên bản");
+                MessageBox.Show("Có lỗi khi tạo biên bản");
             }
         }
-        // Hàm hủy thao tác
+
         private void Cancel()
         {
-           var result =  MessageBox.Show(
-               "Bạn có chắc chắn muốn hủy ko ?", 
-               "Hủy tạo biên bản",
+            var result = MessageBox.Show(
+                "Bạn có chắc chắn muốn hủy không?",
+                "Hủy tạo biên bản",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question
-               );
+            );
             if (result == MessageBoxResult.Yes)
             {
                 App.ViewModel!.CurrentView = new ViolationSearch();
             }
-            
         }
-
         #endregion
+
         #region Constructor
-        
         public ViolationRecordViewModel()
         {
-            // Khởi tạo danh sách 
             ViolationTypes = new ObservableCollection<Violation>();
             ViolationList = new ObservableCollection<Violation>();
-            LoadViolationTypes();
-            // Khởi tạo các lệnh
+            _allViolations = new ObservableCollection<Violation>();
+            LoadViolationTypes(); 
+            
             DeleteCommand = new RelayCommand<Violation>(violation => RemoveViolation(violation));
             AddCommand = new RelayCommand(_ => AddViolation(), _ => CanAddViolation());
-            SaveCommand = new RelayCommand( async _ => await Save());
+            SaveCommand = new RelayCommand(async _ => await Save());
             CancelCommand = new RelayCommand(_ => Cancel());
         }
         #endregion
     }
-    // Class cho danh sách lỗi vi phạm hiển thị trên datagrid
- 
 }

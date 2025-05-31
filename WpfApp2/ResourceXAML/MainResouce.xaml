@@ -5,6 +5,8 @@
     <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     <local:ViolationListToStringConverter x:Key="ViolationListToStringConverter"/>
     <local:BoolToPaidStatusConverter x:Key="BoolToPaidStatusConverter"/>
+    <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    <local:MessageTypeToBrushConverter x:Key="MessageTypeToBrushConverter"/>
     <!--Style DataGridHeader-->     
        <Style TargetType="DataGridColumnHeader" x:Key="DataGridHeaderStyle">  
            <Setter Property="HorizontalContentAlignment" Value="Center"/>  

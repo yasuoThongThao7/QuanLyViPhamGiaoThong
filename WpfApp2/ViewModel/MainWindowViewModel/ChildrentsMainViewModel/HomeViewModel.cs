@@ -81,6 +81,14 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
             {
                 var reportService = new ReportService();
                 var newItems = await reportService.GetPageAsync(_pageNumber, _pageSize);
+
+                // Nếu không còn dữ liệu mới, đánh dấu đã load hết
+                if (newItems == null || newItems.Count == 0)
+                {
+                    _isDataLoaded = true;
+                    return;
+                }
+
                 foreach (var item in newItems)
                 {
                     Reports.Add(new ReportViewModel
@@ -94,12 +102,19 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
                 }
                 _pageNumber++;
                 FilteredData.Refresh();
+
+                // Nếu số lượng bản ghi trả về nhỏ hơn page size, đã hết dữ liệu
+                if (newItems.Count < _pageSize)
+                {
+                    _isDataLoaded = true;
+                }
             }
             finally
             {
                 _isLoading = false;
             }
         }
+
         #endregion
 
         #region Tìm kiếm

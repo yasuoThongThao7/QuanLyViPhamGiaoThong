@@ -57,7 +57,7 @@ namespace WpfApp2
             {
                 Reports = new List<Report>();
                 var service = new PersonService();
-                Person = await service.GetPersonByIdAsync(account.LoginId);
+                Person = await service.GetPersonByIdForUpdateAsync(account.LoginId);
                 if (Person != null)
                 {
                     var reportService = new ReportService();

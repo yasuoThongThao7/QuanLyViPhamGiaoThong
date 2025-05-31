@@ -3,57 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace WpfApp2.ViewModel.Account
 {
     class AccountInformationViewModel:BaseViewModel
     {
+        public ICommand ChangePasswordCommand { get; set; } 
         private string? _name;
-        private string? _rank;
-        private string? _unit;
-        private string? _militaryId;
-        private string? _address;
-        private string? _phoneNumber;
-
-        public string Name
+        public string? Name
         {
-            get => _name!;
-            set { _name = value; OnPropertyChanged(); }
+            get => _name;
+            set => SetProperty(ref _name, value);
         }
-
-        public string Rank
+        public void ChangePassword()
         {
-            get => _rank!;
-            set { _rank = value; OnPropertyChanged(); }
+            App.ViewModel.CurrentView = new View.ChangePassword();
         }
-
-        public string Unit
-        {
-            get => _unit!;
-            set { _unit = value; OnPropertyChanged(); }
-        }
-
-        public string MilitaryId
-        {
-            get => _militaryId!;
-            set { _militaryId = value; OnPropertyChanged(); }
-        }
-
-        public string Address
-        {
-            get => _address!;
-            set { _address = value; OnPropertyChanged(); }
-        }
-
-        public string PhoneNumber
-        {
-            get => _phoneNumber!;
-            set { _phoneNumber = value; OnPropertyChanged(); }
-        }
-
         public AccountInformationViewModel() 
         {
-                        
+            Name = UserSession.Instance.Person.Name;
+            ChangePasswordCommand = new RelayCommand(_ => ChangePassword());
         }
     }
 }

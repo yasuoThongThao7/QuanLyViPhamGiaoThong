@@ -62,6 +62,10 @@ namespace WpfApp2.Service
                 .Distinct() // Loại bỏ trùng lặp nếu cần
                 .CountAsync();
 
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 
 }

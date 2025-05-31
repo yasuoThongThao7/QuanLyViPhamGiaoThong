@@ -52,7 +52,10 @@ namespace WpfApp2.Service
 
             return null;
         }
-
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
 
     }
 

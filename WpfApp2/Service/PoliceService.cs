@@ -18,5 +18,10 @@ namespace WpfApp2.Service
                             .AsNoTracking()
                             .Include(p => p.Person)
                             .FirstOrDefaultAsync(p => p.MilitaryID == id);
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

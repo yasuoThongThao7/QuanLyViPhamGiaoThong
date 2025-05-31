@@ -24,7 +24,11 @@ namespace WpfApp2.Service
              => await _context.Person!
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.CCCD == cccd);
-        
+        // Tra và có theo dõi người vi phạm 
+        public async Task<Person?> GetPersonByIdForUpdateAsync(string cccd)
+            => await _context.Person!
+                .Include(p => p.Reports)
+                .FirstOrDefaultAsync(p => p.CCCD == cccd);
 
         //Tra 1 người
         public async Task<bool> PersonExistsAsync(string cccd)

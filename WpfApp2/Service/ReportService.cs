@@ -175,5 +175,10 @@ namespace WpfApp2.Service
             }
             await _context.SaveChangesAsync();
         }
+        // Hàm save dữ liệu 
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
