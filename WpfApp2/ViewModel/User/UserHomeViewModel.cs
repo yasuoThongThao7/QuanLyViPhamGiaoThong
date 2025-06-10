@@ -90,12 +90,15 @@ namespace WpfApp2.ViewModel.User
     /// <summary>
     /// ViewModel con để hiển thị từng vi phạm gần đây trong ItemsControl.
     /// </summary>
-    public class RecentViolationViewModel : BaseViewModel
+    public class RecentViolationViewModel
     {
-        public string? NumberPlate { get; set; }
-        public DateTime Date { get; set; } 
-        public int Fine { get; set; } 
+        public string NumberPlate { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Fine { get; set; }
         public bool Status { get; set; }
-        public ICommand ViewDetailCommand { get; set; } = default!;
+        public ICommand ViewDetailCommand { get; set; }
+
+        public string StatusText => Status ? "Đã đóng phạt" : "Chưa đóng phạt";
     }
+
 }

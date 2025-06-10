@@ -74,7 +74,7 @@ namespace WpfApp2.ViewModel.User
                     report.IsPaid = true;
                     report.PaidDate = DateTime.Now;
                 }
-                service.SaveChangesAsync().ContinueWith(task =>
+                service.SaveChangesAsync(report!).ContinueWith(task =>
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {

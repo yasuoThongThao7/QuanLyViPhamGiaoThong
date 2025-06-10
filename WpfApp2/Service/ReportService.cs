@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using WpfApp2.Model;
 
@@ -176,9 +177,20 @@ namespace WpfApp2.Service
             await _context.SaveChangesAsync();
         }
         // Hàm save dữ liệu 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(Report rp)
         {
-            await _context.SaveChangesAsync();
+            try
+            {
+                var report = await _context.Report.FindAsync(rp.Id);
+                report.IsPaid = rp.IsPaid;
+                report.PaidDate = rp.PaidDate;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi lưu: " + ex.Message);
+            }
         }
+
     }
 }

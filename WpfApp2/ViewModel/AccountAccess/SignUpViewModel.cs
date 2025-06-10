@@ -200,8 +200,9 @@ namespace WpfApp2.ViewModel.AccountAccess
                 Role = "Citizen"
             };
             await accountService.Add(newAccount);
+            // Đăng nhập tự động sau khi tạo tài khoản
+            await UserSession.Instance.SetUserData(newAccount);
             MessageBox.Show("Tạo tài khoản thành công.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-            // Đóng cửa sổ đăng ký
             IsLoading = false;
             CloseWindow(true);
         }
