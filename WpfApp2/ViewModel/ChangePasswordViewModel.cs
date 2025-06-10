@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
+using WpfApp2.View;
 
 namespace WpfApp2.ViewModel
 {
@@ -75,7 +76,7 @@ namespace WpfApp2.ViewModel
 
         private void Back()
         {
-            App.ViewModel.CurrentView = new Account.AccountInformationViewModel();
+            App.ViewModel.CurrentView = new AccountInformation();
         }
         public ChangePasswordViewModel()
         {

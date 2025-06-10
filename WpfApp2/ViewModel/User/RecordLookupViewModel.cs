@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using WpfApp2.Model;
@@ -83,7 +84,18 @@ namespace WpfApp2.ViewModel.User
 
         private void Search()
         {
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                MessageBox.Show("Vui lòng nhập thông tin tìm kiếm.", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             FilteredData.Refresh();
+
+            if (FilteredData.IsEmpty)
+            {
+                MessageBox.Show("Không tìm thấy kết quả phù hợp.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
         //Xem chi tiết biên bản
         private void ViewDetail(int maBienBan)

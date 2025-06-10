@@ -1,0 +1,183 @@
+﻿use  quanlygiaothong;
+-- Bảng Hãng xe
+CREATE TABLE Brand (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL
+);
+
+-- Bảng Loại xe
+CREATE TABLE Type (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL
+);
+
+-- Bảng Công dân
+CREATE TABLE Person (
+    CCCD VARCHAR(20) PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Address VARCHAR(255),
+    birth DATETIME,
+    PhoneNumber VARCHAR(15)
+);
+
+-- Bảng Xe
+CREATE TABLE Vehicle (
+    Id VARCHAR(20) PRIMARY KEY,
+    BrandId INT,
+    TypeId INT,
+    OwnerId VARCHAR(20),
+    FOREIGN KEY (BrandId) REFERENCES Brand(Id),
+    FOREIGN KEY (TypeId) REFERENCES Type(Id),
+    FOREIGN KEY (OwnerId) REFERENCES Person(CCCD)
+);
+
+-- Bảng Công an giao thông
+CREATE TABLE Police (
+    MilitaryID VARCHAR(20) PRIMARY KEY,
+    Ranks VARCHAR(50),
+    Unit VARCHAR(100),
+    PersonCCCD VARCHAR(20),
+    FOREIGN KEY (PersonCCCD) REFERENCES Person(CCCD)
+);
+
+-- Bảng Vi phạm
+CREATE TABLE Violation (
+    Id INT PRIMARY KEY,
+    Description VARCHAR(255) NOT NULL,
+    TypeId INT,
+    FineAmount INT NOT NULL,
+	FOREIGN KEY (TypeId) REFERENCES Type(Id)
+);
+
+-- Bảng Biên bản xử phạt
+CREATE TABLE Report (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    PersonId VARCHAR(20),
+    PoliceId VARCHAR(20),
+    VehicleId VARCHAR(20),
+    Date DATE NOT NULL,
+    Location VARCHAR(255),
+    TotalFine INT DEFAULT 0,
+    IsPaid TINYINT DEFAULT 0,
+    PaidDate DATE DEFAULT NULL,
+    FOREIGN KEY (PersonId) REFERENCES Person(CCCD),
+    FOREIGN KEY (PoliceId) REFERENCES Police(MilitaryID),
+    FOREIGN KEY (VehicleId) REFERENCES Vehicle(Id)
+);
+
+-- Bảng Chi tiết lỗi
+CREATE TABLE ReportInfo (
+    ReportId INT,
+    ViolationId INT,
+    PRIMARY KEY (ReportId, ViolationId),
+    FOREIGN KEY (ReportId) REFERENCES Report(Id),
+    FOREIGN KEY (ViolationId) REFERENCES Violation(Id)
+);
+
+-- Tài khoản đăng nhập
+CREATE TABLE Account (
+    LoginId VARCHAR(20) PRIMARY KEY,
+    Password VARCHAR(100) NOT NULL,
+    Role ENUM('Citizen', 'Police') NOT NULL
+);
+
+
+-- Mẫu dữ liệu 
+USE quanlygiaothong;
+
+INSERT INTO Brand (Id, Name) VALUES
+(1, 'Toyota'),
+(2, 'Honda'),
+(3, 'Ford'),
+(4, 'BMW'),
+(5, 'Mercedes-Benz'),
+(6, 'Hyundai'),
+(7, 'Kia'),
+(8, 'Nissan'),
+(9, 'Volkswagen'),
+(10, 'Mazda');
+INSERT INTO Type (Id, Name) VALUES
+(1, 'Xe máy'),
+(2, 'Oto');
+INSERT INTO Person (CCCD, Name, Address, birth, PhoneNumber) VALUES
+('12345678901', 'Nguyễn Văn An', 'Hà Nội', '1990-01-01', '0901234567'),
+('23456789012', 'Trần Thị Bình', 'TP.HCM', '1992-02-02', '0902345678'),
+('34567890123', 'Lê Văn Cường', 'Đà Nẵng', '1985-03-03', '0903456789'),
+('45678901234', 'Phạm Thị Dung', 'Hải Phòng', '1995-04-04', '0904567890'),
+('56789012345', 'Hoàng Văn Em', 'Cần Thơ', '1988-05-05', '0905678901'),
+('67890123456', 'Đặng Thị Phượng', 'Nha Trang', '1993-06-06', '0906789012'),
+('78901234567', 'Võ Văn Giang', 'Huế', '1991-07-07', '0907890123'),
+('89012345678', 'Bùi Thị Hoa', 'Vũng Tàu', '1994-08-08', '0908901234'),
+('90123456789', 'Phan Văn Inh', 'Quảng Ninh', '1989-09-09', '0909012345'),
+('01234567890', 'Ngô Thị Khánh', 'Bình Dương', '1996-10-10', '0900123456'),
+('11223344556', 'Đỗ Văn Long', 'Đồng Nai', '1987-11-11', '0911223344'),
+('22334455667', 'Trịnh Thị Mai', 'Long An', '1997-12-12', '0922334455'),
+('33445566778', 'Vũ Văn Nam', 'Tiền Giang', '1986-01-13', '0933445566'),
+('44556677889', 'Lý Thị Oanh', 'Bến Tre', '1998-02-14', '0944556677'),
+('55667788990', 'Hồ Văn Phong', 'Kiên Giang', '1984-03-15', '0955667788');
+INSERT INTO Vehicle (Id, BrandId, TypeId, OwnerId) VALUES
+('29A-12345', 1, 2, '12345678901'),  -- Oto
+('30B-23456', 2, 1, '23456789012'),  -- Xe máy
+('51C-34567', 3, 2, '34567890123'),  -- Sửa TypeId từ 3 ➝ 2
+('52D-45678', 4, 2, '45678901234'),
+('53E-56789', 5, 2, '56789012345'),  -- Sửa TypeId từ 6 ➝ 2
+('54F-67890', 6, 1, '67890123456'),  -- Sửa TypeId từ 4 ➝ 1
+('55G-78901', 7, 1, '78901234567'),  -- Sửa TypeId từ 5 ➝ 1
+('56H-89012', 8, 2, '89012345678'),  -- Sửa TypeId từ 9 ➝ 2
+('57I-90123', 9, 2, '90123456789'),
+('58K-01234', 10, 1, '01234567890'); -- Sửa TypeId từ 7 ➝ 1
+INSERT INTO Police (MilitaryID, Ranks, Unit, PersonCCCD) VALUES
+('CA_001', 'Đại úy', 'Đội CSGT Quận 1', '12345678901'),
+('CA_002', 'Thiếu tá', 'Đội CSGT Quận 2', '23456789012'),
+('CA_003', 'Trung tá', 'Đội CSGT Quận 3', '34567890123'),
+('CA_004', 'Thượng úy', 'Đội CSGT Quận 4', '45678901234'),
+('CA_005', 'Đại tá', 'Đội CSGT Quận 5', '56789012345'),
+('CA_006', 'Thiếu úy', 'Đội CSGT Quận 6', '67890123456'),
+('CA_007', 'Trung úy', 'Đội CSGT Quận 7', '78901234567'),
+('CA_008', 'Đại úy', 'Đội CSGT Quận 8', '89012345678'),
+('CA_009', 'Thiếu tá', 'Đội CSGT Quận 9', '90123456789'),
+('CA_010', 'Trung tá', 'Đội CSGT Quận 10', '01234567890');
+INSERT INTO Violation (Id, Description,TypeId,FineAmount) VALUES
+(1, 'Vượt đèn đỏ',1, 500000),
+(2, 'Đi ngược chiều',1, 1000000),
+(3, 'Không đội mũ bảo hiểm',null, 200000),
+(4, 'Đỗ xe sai quy định',2,300000),
+(5, 'Chạy quá tốc độ',2,700000),
+(6, 'Không có giấy phép lái xe',2, 1000000),
+(7, 'Sử dụng điện thoại khi lái xe',1, 400000),
+(8, 'Không thắt dây an toàn',2, 300000),
+(9, 'Lái xe trong tình trạng say xỉn',1, 2000000),
+(10, 'Đi vào đường cấm',null, 600000);
+INSERT INTO Report (PersonId, PoliceId, VehicleId, Date, Location, TotalFine, IsPaid, PaidDate) VALUES
+('12345678901', 'CA_001', '29A-12345', '2023-01-01', 'Hà Nội', 500000, 1, '2023-01-02'),
+('23456789012', 'CA_002', '30B-23456', '2023-01-02', 'TP.HCM', 200000, 0, NULL),
+('34567890123', 'CA_003', '51C-34567', '2023-01-03', 'Đà Nẵng', 1000000, 1, '2023-01-04'),
+('45678901234', 'CA_004', '52D-45678', '2023-01-04', 'Hải Phòng', 300000, 0, NULL),
+('56789012345', 'CA_005', '53E-56789', '2023-01-05', 'Cần Thơ', 700000, 1, '2023-01-06'),
+('67890123456', 'CA_006', '54F-67890', '2023-01-06', 'Nha Trang', 1000000, 0, NULL),
+('78901234567', 'CA_007', '55G-78901', '2023-01-07', 'Huế', 400000, 1, '2023-01-08'),
+('89012345678', 'CA_008', '56H-89012', '2023-01-08', 'Vũng Tàu', 300000, 0, NULL),
+('90123456789', 'CA_009', '57I-90123', '2023-01-09', 'Quảng Ninh', 2000000, 1, '2023-01-10'),
+('01234567890', 'CA_010', '58K-01234', '2023-01-10', 'Bình Dương', 600000, 0, NULL);
+INSERT INTO ReportInfo (ReportId, ViolationId) VALUES
+(1, 1),
+(2, 3),
+(3, 2),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10);
+INSERT INTO Account (LoginId, Password, Role) VALUES
+('CA_001', 'capassword1', 'Police'),
+('CA_002', 'capassword2', 'Police'),
+('CA_003', 'capassword3', 'Police'),
+('CA_004', 'capassword4', 'Police'),
+('CA_005', 'capassword5', 'Police'),
+('CA_006', 'capassword6', 'Police'),
+('CA_007', 'capassword7', 'Police'),
+('CA_008', 'capassword8', 'Police'),
+('CA_009', 'capassword9', 'Police'),
+('CA_010', 'capassword10', 'Police');

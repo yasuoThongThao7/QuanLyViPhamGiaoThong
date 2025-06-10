@@ -282,10 +282,18 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
         {
             if (SelectedViolationType is Violation violation)
             {
-                ViolationList.Add(violation);
-                ViolationTypes.Remove(violation);
-                CalculateTotalFine();
-                ViolationMessage = null;
+                if (ViolationList.Contains(violation))
+                {
+                    ViolationMessage = "Lỗi vi phạm này đã được thêm.";
+                    ViolationMessageType = "Error";
+                }
+                else
+                {
+                    ViolationList.Add(violation);
+                    ViolationTypes.Remove(violation);
+                    CalculateTotalFine();
+                    ViolationMessage = null;
+                }
             }
             else
             {
@@ -294,6 +302,7 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
             }
             SelectedViolationType = null;
         }
+
 
         private bool CanAddViolation()
         {
@@ -344,6 +353,12 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
 
         private async Task Save()
         {
+            if (string.IsNullOrWhiteSpace(CCCD))
+            {
+                CccdMessage = "Vui lòng nhập CCCD.";
+                CccdMessageType = "Error";
+                return;
+            }
             if (!_isCCCDTrue)
             {
                 CccdMessage = "Vui lòng nhập đúng CCCD.";
@@ -351,10 +366,23 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(NumberPlate))
+            {
+                VehicleMessage = "Vui lòng nhập biển số xe.";
+                VehicleMessageType = "Error";
+                return;
+            }
             if (!_isVehicleInfoValid)
             {
                 VehicleMessage = "Vui lòng nhập đúng biển số xe.";
                 VehicleMessageType = "Error";
+                return;
+            }
+
+            if (ViolationList == null || ViolationList.Count == 0)
+            {
+                ViolationMessage = "Vui lòng chọn ít nhất một lỗi vi phạm.";
+                ViolationMessageType = "Error";
                 return;
             }
 
@@ -376,6 +404,7 @@ namespace WpfApp2.ViewModel.MainWindowViewModel.ChildrentsMainViewModel
                 MessageBox.Show("Có lỗi khi tạo biên bản");
             }
         }
+
 
         private void Cancel()
         {

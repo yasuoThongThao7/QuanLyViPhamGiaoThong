@@ -89,7 +89,7 @@ namespace WpfApp2.ViewModel
             // Phân quyền người dùng
             if (UserSession.Instance.Role == "Police") // Role = "Công an"
             {
-                Title = "Quản lý giao thông";
+                Title = "Quản lý vi phạm";
                 MenuItems = new ObservableCollection<MenuItemModel>
                 {
                     new MenuItemModel { Icon = "HomeAnalytics", Title = "Trang chủ" },

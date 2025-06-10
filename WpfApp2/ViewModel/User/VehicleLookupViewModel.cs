@@ -35,12 +35,13 @@ namespace WpfApp2.ViewModel.User
         {
             App.ViewModel!.CurrentView = new UserHome();
         }
-      
+
         private async Task ExecuteSearch(object parameter)
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
                 VehicleInfo = null;
+                MessageBox.Show("Vui lòng nhập biển số xe để tra cứu.", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -55,5 +56,6 @@ namespace WpfApp2.ViewModel.User
                 MessageBox.Show("Không tìm thấy thông tin xe với biển số này.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
     }
 }

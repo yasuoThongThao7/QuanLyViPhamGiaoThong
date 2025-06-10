@@ -1,15 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace WpfApp2.Model
 {
     public class AppDbContext : DbContext
     {
-        private static readonly string? connectionString = "server=localhost;port=3306;database=quanlygiaothong;user id=root;password=liemlol0934;sslmode=Preferred";
+        private static readonly string? connectionString;
+
+        static AppDbContext()
+        {
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            if (!File.Exists(path))
+            {
+                MessageBox.Show("File appsettings.json không tồn tại ở: " + path);
+            }
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            connectionString = config.GetConnectionString("DefaultConnection");
+        }
+
 
         public DbSet<Account>? Account { get; set; }
         public DbSet<Person>? Person { get; set; }
@@ -24,6 +44,7 @@ namespace WpfApp2.Model
             optionsBuilder.UseMySQL(connectionString!);
             base.OnConfiguring(optionsBuilder);
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ReportInfo>()

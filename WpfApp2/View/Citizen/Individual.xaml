@@ -52,10 +52,6 @@
                             <TextBlock Text="{Binding Birth}" FontSize="16" Foreground="#3A3A3A"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,6">
-                            <TextBlock Text="Giới tính:" FontSize="16" FontWeight="SemiBold" Width="120" Foreground="#6B6B6B"/>
-                            <TextBlock Text="Nam" FontSize="16" Foreground="#3A3A3A"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,6">
                             <TextBlock Text="Địa chỉ:" FontSize="16" FontWeight="SemiBold" Width="120" Foreground="#6B6B6B"/>
                             <TextBlock Text="{Binding Address}" FontSize="16" Foreground="#3A3A3A"/>
                         </StackPanel>

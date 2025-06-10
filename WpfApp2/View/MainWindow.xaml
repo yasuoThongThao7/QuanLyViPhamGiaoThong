@@ -10,7 +10,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="#FFF8F5"
         FontFamily="Segoe UI"
-        Title="Quản lý giao thông" Height="650" Width="1100">
+        Title="Quản lý vi phạm giao thông" Height="650" Width="1100">
     <Window.Resources>
         <Storyboard x:Key="ExpandSidebar">
             <DoubleAnimation Storyboard.TargetName="Sidebar"

@@ -65,25 +65,46 @@ namespace WpfApp2.ViewModel.User
         public ICommand BackCommand { get; }
         private void Pay()
         {
-            if (ReportNumber > 0 && !string.IsNullOrEmpty(SelectedPaymentMethod))
+            if (ReportNumber <= 0)
             {
-                ReportService service = new ReportService();
-                var report = UserSession.Instance.Reports.Find(r => r.Id == ReportNumber);
-                if (report != null)
-                {
-                    report.IsPaid = true;
-                    report.PaidDate = DateTime.Now;
-                }
-                service.SaveChangesAsync(report!).ContinueWith(task =>
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        MessageBox.Show("Thanh toán thành công");
-                        App.ViewModel!.CurrentView = new UserHome();
-                    });
-                });
+                MessageBox.Show("Vui lòng nhập số biên bản hợp lệ.", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
+
+            if (string.IsNullOrEmpty(SelectedPaymentMethod))
+            {
+                MessageBox.Show("Vui lòng chọn phương thức thanh toán.", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var report = UserSession.Instance.Reports.Find(r => r.Id == ReportNumber);
+            if (report == null)
+            {
+                MessageBox.Show("Không tìm thấy biên bản phù hợp.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (report.IsPaid)
+            {
+                MessageBox.Show("Biên bản này đã được thanh toán trước đó.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            ReportService service = new ReportService();
+            report.IsPaid = true;
+            report.PaidDate = DateTime.Now;
+
+            service.SaveChangesAsync(report).ContinueWith(task =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show("Thanh toán thành công");
+                    App.ViewModel!.CurrentView = new UserHome();
+                });
+            });
         }
+
+        
         private void ImportProperty()
         {
             var report = UserSession.Instance.Reports.Find(r => r.Id == ReportNumber);
